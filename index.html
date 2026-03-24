@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI French Tutor - DeepSeek | H?c B2 trong 6 tháng</title>
+    <title>AI Assistant - DeepSeek | Hoc B2 trong 6 tháng</title>
     <style>
         * {
             margin: 0;
@@ -321,7 +321,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <h1>???? Professeur IA</h1>
-            <p>H?c ti?ng Pháp v?i DeepSeek AI</p>
+            <p>Hoc tieng Phap voi AI</p>
         </div>
         
         <div class="stats-grid">
@@ -331,37 +331,37 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="levelValue">A1</div>
-                <div class="stat-label">C?p d? hi?n t?i</div>
+                <div class="stat-label">Cap do hien tai</div>
             </div>
         </div>
 
         <div class="roadmap">
-            <h3>??? L? trình 6 tháng d?n B2</h3>
-            <div class="milestone" id="milestoneA1">? Tháng 1-2: A1 - Co b?n</div>
-            <div class="milestone" id="milestoneA2">? Tháng 3-4: A2 - Giao ti?p</div>
-            <div class="milestone" id="milestoneB1">? Tháng 5: B1 - Ð?c l?p</div>
-            <div class="milestone" id="milestoneB2">? Tháng 6: B2 - Thành th?o</div>
+            <h3>Lo trình 6 tháng den B2</h3>
+            <div class="milestone" id="milestoneA1">Tháng 1-2: A1 - Co ban</div>
+            <div class="milestone" id="milestoneA2">Tháng 3-4: A2 - Giao tiep</div>
+            <div class="milestone" id="milestoneB1">Tháng 5: B1 - Ðoc lap</div>
+            <div class="milestone" id="milestoneB2">Tháng 6: B2 - Thành thao</div>
         </div>
 
         <div class="lesson-list">
-            <h3 style="padding: 0 8px 12px 8px;">?? Bài h?c</h3>
+            <h3 style="padding: 0 8px 12px 8px;">?? Bài hoc</h3>
             <div id="lessonList"></div>
         </div>
     </div>
 
     <div class="main-area">
         <div class="tabs">
-            <button class="tab-btn active" data-tab="chat">?? H?c v?i AI</button>
-            <button class="tab-btn" data-tab="vocab">?? T? v?ng</button>
-            <button class="tab-btn" data-tab="review">?? Ôn t?p</button>
-            <button class="tab-btn" data-tab="export">?? Export</button>
+            <button class="tab-btn active" data-tab="chat">Hoc voi AI</button>
+            <button class="tab-btn" data-tab="vocab">Tu vung</button>
+            <button class="tab-btn" data-tab="review">Ôn tap</button>
+            <button class="tab-btn" data-tab="export">Export</button>
         </div>
 
         <div id="chatTab" class="tab-content active">
             <div class="chat-messages" id="chatMessages">
                 <div class="message teacher-message">
                     <div class="message-content">
-                        Bonjour! ?? Je suis votre professeur de français avec DeepSeek AI. 
+                        Bonjour! Je suis votre professeur de français avec DeepSeek AI. 
                         Commençons par la leçon A1: Les salutations. Dites "Bonjour" pour commencer!
                     </div>
                 </div>
@@ -378,13 +378,13 @@
         </div>
 
         <div id="reviewTab" class="tab-content">
-            <h2 style="margin-bottom: 16px;">?? Ôn t?p t? v?ng (Spaced Repetition)</h2>
+            <h2 style="margin-bottom: 16px;">Ôn tap tu vung (Spaced Repetition)</h2>
             <div id="reviewContainer"></div>
         </div>
 
         <div id="exportTab" class="tab-content">
-            <h2 style="margin-bottom: 16px;">?? Xu?t d? li?u h?c t?p</h2>
-            <button id="exportBtn" style="background: #10b981; margin-bottom: 20px;">?? Export PDF</button>
+            <h2 style="margin-bottom: 16px;">Xuat du lieu hoc tap</h2>
+            <button id="exportBtn" style="background: #10b981; margin-bottom: 20px;">Export PDF</button>
             <div id="exportPreview" style="background: #f1f5f9; padding: 20px; border-radius: 12px;"></div>
         </div>
     </div>
@@ -451,9 +451,9 @@
         
         document.getElementById('levelValue').innerText = currentLevel;
         
-        document.getElementById('milestoneA2').innerHTML = completedA2 ? '? Tháng 3-4: A2 - Giao ti?p' : '? Tháng 3-4: A2 - Giao ti?p';
-        document.getElementById('milestoneB1').innerHTML = completedB1 ? '? Tháng 5: B1 - Ð?c l?p' : '? Tháng 5: B1 - Ð?c l?p';
-        document.getElementById('milestoneB2').innerHTML = completedB2 ? '? Tháng 6: B2 - Thành th?o' : '? Tháng 6: B2 - Thành th?o';
+        document.getElementById('milestoneA2').innerHTML = completedA2 ? 'Tháng 3-4: A2 - Giao tiep' : 'Tháng 3-4: A2 - Giao tiep';
+        document.getElementById('milestoneB1').innerHTML = completedB1 ? 'Tháng 5: B1 - Ðoc lap' : 'Tháng 5: B1 - Ðoc lap';
+        document.getElementById('milestoneB2').innerHTML = completedB2 ? 'Tháng 6: B2 - Thành thao' : 'Tháng 6: B2 - Thành thao';
     }
 
     async function callDeepSeekAPI(userMessage, lessonContext) {
@@ -478,9 +478,9 @@
                     messages: [
                         {
                             role: 'system',
-                            content: `B?n là giáo viên ti?ng Pháp chuyên nghi?p. H?c viên dang ? trình d? ${currentLevel}. 
-                            Bài h?c hi?n t?i: ${lessonContext.title} (${lessonContext.level}).
-                            Hãy tr? l?i b?ng ti?ng Pháp kèm gi?i thích ti?ng Vi?t. S?a l?i n?u h?c viên sai. Gi? gi?ng thân thi?n.`
+                            content: `Ban là giáo viên tieng Pháp chuyên nghiep. Hoc viên dang o trình do ${currentLevel}. 
+                            Bài hoc hien tai: ${lessonContext.title} (${lessonContext.level}).
+                            Hãy tra loi bang tieng Pháp kèm giai thích tieng Viet. Sua loi neu hoc viên sai.`
                         },
                         {
                             role: 'user',
@@ -521,7 +521,7 @@
             
         } catch (error) {
             console.error('DeepSeek API error:', error);
-            return `? L?i k?t n?i DeepSeek: ${error.message}. Vui lòng ki?m tra API key.`;
+            return `Loi ket noi DeepSeek: ${error.message}. Vui lòng kiem tra API key.`;
         } finally {
             isLoading = false;
             sendBtn.innerHTML = 'Envoyer';
@@ -585,7 +585,7 @@
             
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.textContent = `?? Streak: ${streak} ngày! Ti?p t?c gi? l?a!`;
+            toast.textContent = `Streak: ${streak} ngày! Tiep tuc`;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
@@ -611,7 +611,7 @@
                 if (e.target.classList.contains('complete-btn')) return;
                 activeLesson = lesson.id;
                 renderLessons();
-                appendMessage(`?? Chuy?n sang bài h?c: ${lesson.title}. Hãy b?t d?u nào!`, false);
+                appendMessage(`Chuyen sang bài hoc: ${lesson.title}. Hãy bat dau nào!`, false);
                 saveData();
             };
             
@@ -635,7 +635,7 @@
             renderLessons();
             saveData();
             
-            appendMessage(`?? Félicitations! B?n dã hoàn thành bài "${lesson.title}". Làm bài ki?m tra nhanh nhé!`, false);
+            appendMessage(`Félicitations! Ban dã hoàn thành bài "${lesson.title}". Làm bài kiem tra nhanh nhé!`, false);
             
             setTimeout(() => {
                 const quizAnswer = prompt(`Quiz: ${lesson.level === 'A1' ? 'Comment dit-on "Hello" en français?' : 
@@ -651,7 +651,7 @@
     function renderVocabulary() {
         const container = document.getElementById('vocabList');
         if (vocabulary.length === 0) {
-            container.innerHTML = '<p>Chua có t? v?ng nào. H?c v?i AI d? t? d?ng luu t? m?i!</p>';
+            container.innerHTML = '<p>Chua có tu vung nào. Hoc voi AI de tu dong luu tu moi!</p>';
             return;
         }
         
@@ -669,7 +669,7 @@
         const container = document.getElementById('reviewContainer');
         
         if (dueWords.length === 0) {
-            container.innerHTML = '<div class="review-card"><p>? Không có t? nào c?n ôn t?p hôm nay! ?</p></div>';
+            container.innerHTML = '<div class="review-card"><p>Không có tu nào can ôn tap hôm nay!</p></div>';
             return;
         }
         
@@ -679,7 +679,7 @@
             const word = dueWords[currentIndex];
             container.innerHTML = `
                 <div class="review-card">
-                    <p>T? v?ng c?n ôn: ${currentIndex + 1}/${dueWords.length}</p>
+                    <p>Tu vung can ôn: ${currentIndex + 1}/${dueWords.length}</p>
                     <div class="review-word">${word.word}</div>
                     <div class="review-buttons">
                         <button id="hardBtn" style="background: #ef4444;">?? Khó</button>
@@ -701,7 +701,7 @@
             if (currentIndex < dueWords.length) {
                 showWord();
             } else {
-                container.innerHTML = '<div class="review-card"><p>?? Hoàn thành ôn t?p hôm nay! ??</p></div>';
+                container.innerHTML = '<div class="review-card"><p>Hoàn thành ôn tap hôm nay! ??</p></div>';
                 renderVocabulary();
             }
         }
@@ -715,16 +715,16 @@
         
         const exportHtml = `
             <div style="font-family: Arial, sans-serif; padding: 20px;">
-                <h1>Báo cáo h?c ti?ng Pháp</h1>
-                <p><strong>C?p d?:</strong> ${currentLevel}</p>
+                <h1>Báo cáo hoc tieng Pháp</h1>
+                <p><strong>Cap do:</strong> ${currentLevel}</p>
                 <p><strong>Streak:</strong> ${streak} ngày</p>
-                <p><strong>Ngày xu?t:</strong> ${new Date().toLocaleDateString('vi-VN')}</p>
+                <p><strong>Ngày xuat:</strong> ${new Date().toLocaleDateString('vi-VN')}</p>
                 
-                <h2>?? Bài h?c dã hoàn thành</h2>
-                <pre>${completedLessons || 'Chua có bài h?c nào'}</pre>
+                <h2>Bài hoc dã hoàn thành</h2>
+                <pre>${completedLessons || 'Chua có bài hoc nào'}</pre>
                 
-                <h2>?? T? v?ng dã h?c</h2>
-                <p>${vocabList || 'Chua có t? v?ng'}</p>
+                <h2>Tu vung dã hoc</h2>
+                <p>${vocabList || 'Chua có tu vung'}</p>
             </div>
         `;
         
@@ -757,8 +757,8 @@
                 if (btn.dataset.tab === 'export') {
                     const completed = lessons.filter(l => l.completed).map(l => l.title).join('\n');
                     document.getElementById('exportPreview').innerHTML = `
-                        <strong>Bài h?c dã hoàn thành:</strong><br>${completed || 'Chua có'}<br><br>
-                        <strong>S? t? v?ng:</strong> ${vocabulary.length} t?
+                        <strong>Bài hoc dã hoàn thành:</strong><br>${completed || 'Chua có'}<br><br>
+                        <strong>So tu vung:</strong> ${vocabulary.length} t?
                     `;
                 }
             };
