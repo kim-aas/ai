@@ -320,14 +320,14 @@
 <div class="app-container">
     <div class="sidebar">
         <div class="sidebar-header">
-            <h1>???? Professeur IA</h1>
+            <h1>Professeur AI</h1>
             <p>Hoc tieng Phap voi AI</p>
         </div>
         
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-value" id="streakValue">0</div>
-                <div class="stat-label">?? Streak ngày</div>
+                <div class="stat-label">  Streak ngày</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="levelValue">A1</div>
@@ -344,7 +344,7 @@
         </div>
 
         <div class="lesson-list">
-            <h3 style="padding: 0 8px 12px 8px;">?? Bài hoc</h3>
+            <h3 style="padding: 0 8px 12px 8px;">Bài hoc</h3>
             <div id="lessonList"></div>
         </div>
     </div>
@@ -373,7 +373,7 @@
         </div>
 
         <div id="vocabTab" class="tab-content">
-            <h2 style="margin-bottom: 16px;">?? Carnet de vocabulaire</h2>
+            <h2 style="margin-bottom: 16px;">Carnet de vocabulaire</h2>
             <div id="vocabList"></div>
         </div>
 
@@ -392,8 +392,8 @@
 
 <script>
     // ==================== C?U HÌNH DEEPSEEK API ====================
-    // ?? QUAN TR?NG: Thay YOUR_DEEPSEEK_API_KEY b?ng API key th?t c?a b?n
-    const DEEPSEEK_API_KEY = 'sk-355cd649185b4be083605e29c21f3c31'; // ?? THAY Ð?I DÒNG NÀY!
+    //   QUAN TR?NG: Thay YOUR_DEEPSEEK_API_KEY b?ng API key th?t c?a b?n
+    const DEEPSEEK_API_KEY = 'sk-355cd649185b4be083605e29c21f3c31'; //   THAY Ð?I DÒNG NÀY!
     const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 
     let lessons = [
@@ -458,7 +458,7 @@
 
     async function callDeepSeekAPI(userMessage, lessonContext) {
         if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'YOUR_DEEPSEEK_API_KEY') {
-            return "?? Vui lòng c?u hình DeepSeek API Key trong code. Ðang ký mi?n phí t?i platform.deepseek.com";
+            return "  Vui lòng c?u hình DeepSeek API Key trong code. Ðang ký mi?n phí t?i platform.deepseek.com";
         }
 
         isLoading = true;
@@ -535,8 +535,8 @@
         messageDiv.className = `message ${isUser ? 'user-message' : 'teacher-message'}`;
         
         let content = text;
-        if (!isUser && !text.includes('??') && !text.includes('?')) {
-            content = text + ` <button class="speaker-icon" onclick="speakText('${text.replace(/'/g, "\\'").substring(0, 100)}')">??</button>`;
+        if (!isUser && !text.includes(' ') && !text.includes('?')) {
+            content = text + ` <button class="speaker-icon" onclick="speakText('${text.replace(/'/g, "\\'").substring(0, 100)}')"> </button>`;
         }
         
         messageDiv.innerHTML = `<div class="message-content">${content}</div>`;
@@ -603,7 +603,7 @@
             const div = document.createElement('div');
             div.className = `lesson-item ${lesson.completed ? 'completed' : ''} ${activeLesson === lesson.id ? 'active' : ''}`;
             div.innerHTML = `
-                <span>${lesson.completed ? '?' : '??'} ${lesson.title}</span>
+                <span>${lesson.completed ? '?' : ' '} ${lesson.title}</span>
                 ${!lesson.completed ? `<button class="complete-btn" data-id="${lesson.id}">Hoàn thành</button>` : ''}
             `;
             
@@ -658,7 +658,7 @@
         container.innerHTML = vocabulary.map(v => `
             <div class="vocab-item">
                 <span><strong>${v.word}</strong></span>
-                <button onclick="speakText('${v.word}')" style="background: #667eea; padding: 4px 12px; font-size: 12px;">?? Nghe</button>
+                <button onclick="speakText('${v.word}')" style="background: #667eea; padding: 4px 12px; font-size: 12px;">  Nghe</button>
             </div>
         `).join('');
     }
@@ -682,9 +682,9 @@
                     <p>Tu vung can ôn: ${currentIndex + 1}/${dueWords.length}</p>
                     <div class="review-word">${word.word}</div>
                     <div class="review-buttons">
-                        <button id="hardBtn" style="background: #ef4444;">?? Khó</button>
-                        <button id="goodBtn" style="background: #10b981;">?? OK</button>
-                        <button id="easyBtn" style="background: #3b82f6;">?? D?</button>
+                        <button id="hardBtn" style="background: #ef4444;">  Khó</button>
+                        <button id="goodBtn" style="background: #10b981;">  OK</button>
+                        <button id="easyBtn" style="background: #3b82f6;">  D?</button>
                     </div>
                 </div>
             `;
@@ -701,7 +701,7 @@
             if (currentIndex < dueWords.length) {
                 showWord();
             } else {
-                container.innerHTML = '<div class="review-card"><p>Hoàn thành ôn tap hôm nay! ??</p></div>';
+                container.innerHTML = '<div class="review-card"><p>Hoàn thành ôn tap hôm nay!  </p></div>';
                 renderVocabulary();
             }
         }
