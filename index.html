@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI French Tutor - DeepSeek | H?c B2 trong 6 tháng</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .sidebar {
+            width: 320px;
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .stats-grid {
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .roadmap {
+            padding: 16px;
+            background: white;
+            margin: 16px;
+            border-radius: 12px;
+        }
+
+        .roadmap h3 {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: #334155;
+        }
+
+        .milestone {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        .lesson-list {
+            flex: 1;
+            padding: 0 12px 20px 12px;
+        }
+
+        .lesson-item {
+            padding: 12px;
+            margin: 6px 0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lesson-item:hover {
+            border-color: #667eea;
+            transform: translateX(4px);
+        }
+
+        .lesson-item.active {
+            background: #eef2ff;
+            border-color: #667eea;
+        }
+
+        .lesson-item.completed {
+            opacity: 0.7;
+            background: #f0fdf4;
+        }
+
+        .complete-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            padding: 16px 20px 0 20px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #64748b;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f9fafb;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+        }
+
+        .user-message .message-content {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .teacher-message .message-content {
+            background: white;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .speaker-icon {
+            margin-left: 8px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 14px;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            resize: none;
+            font-family: inherit;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .tab-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .vocab-item {
+            background: white;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .review-word {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .review-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                max-height: 40%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>???? Professeur IA</h1>
+            <p>H?c ti?ng Pháp v?i DeepSeek AI</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="streakValue">0</div>
+                <div class="stat-label">?? Streak ngày</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="levelValue">A1</div>
+                <div class="stat-label">C?p d? hi?n t?i</div>
+            </div>
+        </div>
+
+        <div class="roadmap">
+            <h3>??? L? trình 6 tháng d?n B2</h3>
+            <div class="milestone" id="milestoneA1">? Tháng 1-2: A1 - Co b?n</div>
+            <div class="milestone" id="milestoneA2">? Tháng 3-4: A2 - Giao ti?p</div>
+            <div class="milestone" id="milestoneB1">? Tháng 5: B1 - Ð?c l?p</div>
+            <div class="milestone" id="milestoneB2">? Tháng 6: B2 - Thành th?o</div>
+        </div>
+
+        <div class="lesson-list">
+            <h3 style="padding: 0 8px 12px 8px;">?? Bài h?c</h3>
+            <div id="lessonList"></div>
+        </div>
+    </div>
+
+    <div class="main-area">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="chat">?? H?c v?i AI</button>
+            <button class="tab-btn" data-tab="vocab">?? T? v?ng</button>
+            <button class="tab-btn" data-tab="review">?? Ôn t?p</button>
+            <button class="tab-btn" data-tab="export">?? Export</button>
+        </div>
+
+        <div id="chatTab" class="tab-content active">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message teacher-message">
+                    <div class="message-content">
+                        Bonjour! ?? Je suis votre professeur de français avec DeepSeek AI. 
+                        Commençons par la leçon A1: Les salutations. Dites "Bonjour" pour commencer!
+                    </div>
+                </div>
+            </div>
+            <div class="input-area">
+                <textarea id="userInput" rows="2" placeholder="Écrivez votre réponse en français..."></textarea>
+                <button id="sendBtn">Envoyer</button>
+            </div>
+        </div>
+
+        <div id="vocabTab" class="tab-content">
+            <h2 style="margin-bottom: 16px;">?? Carnet de vocabulaire</h2>
+            <div id="vocabList"></div>
+        </div>
+
+        <div id="reviewTab" class="tab-content">
+            <h2 style="margin-bottom: 16px;">?? Ôn t?p t? v?ng (Spaced Repetition)</h2>
+            <div id="reviewContainer"></div>
+        </div>
+
+        <div id="exportTab" class="tab-content">
+            <h2 style="margin-bottom: 16px;">?? Xu?t d? li?u h?c t?p</h2>
+            <button id="exportBtn" style="background: #10b981; margin-bottom: 20px;">?? Export PDF</button>
+            <div id="exportPreview" style="background: #f1f5f9; padding: 20px; border-radius: 12px;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== C?U HÌNH DEEPSEEK API ====================
+    // ?? QUAN TR?NG: Thay YOUR_DEEPSEEK_API_KEY b?ng API key th?t c?a b?n
+    const DEEPSEEK_API_KEY = 'sk-355cd649185b4be083605e29c21f3c31'; // ?? THAY Ð?I DÒNG NÀY!
+    const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+
+    let lessons = [
+        { id: 1, title: "A1 - Salutations et présentations", level: "A1", completed: false },
+        { id: 2, title: "A1 - Nombres et jours de la semaine", level: "A1", completed: false },
+        { id: 3, title: "A1 - Articles définis et indéfinis", level: "A1", completed: false },
+        { id: 4, title: "A2 - Passé composé (avoir/être)", level: "A2", completed: false },
+        { id: 5, title: "A2 - Vocabulaire du restaurant", level: "A2", completed: false },
+        { id: 6, title: "A2 - Futur proche et simple", level: "A2", completed: false },
+        { id: 7, title: "B1 - Expression d'opinion", level: "B1", completed: false },
+        { id: 8, title: "B1 - Subjonctif présent", level: "B1", completed: false },
+        { id: 9, title: "B2 - Discours argumentatif", level: "B2", completed: false },
+        { id: 10, title: "B2 - Conditionnel et hypothèses", level: "B2", completed: false }
+    ];
+
+    let vocabulary = [];
+    let streak = 0;
+    let lastPracticeDate = null;
+    let currentLevel = "A1";
+    let activeLesson = 1;
+    let isLoading = false;
+
+    function loadData() {
+        const saved = localStorage.getItem('french_tutor_data');
+        if (saved) {
+            const data = JSON.parse(saved);
+            lessons = data.lessons || lessons;
+            vocabulary = data.vocabulary || [];
+            streak = data.streak || 0;
+            lastPracticeDate = data.lastPracticeDate || null;
+            currentLevel = data.currentLevel || "A1";
+            activeLesson = data.activeLesson || 1;
+        }
+        updateLevel();
+        renderLessons();
+        updateStreakUI();
+        renderVocabulary();
+    }
+
+    function saveData() {
+        localStorage.setItem('french_tutor_data', JSON.stringify({
+            lessons, vocabulary, streak, lastPracticeDate, currentLevel, activeLesson
+        }));
+    }
+
+    function updateLevel() {
+        const completedA2 = lessons.some(l => l.level === "A2" && l.completed);
+        const completedB1 = lessons.some(l => l.level === "B1" && l.completed);
+        const completedB2 = lessons.some(l => l.level === "B2" && l.completed);
+        
+        if (completedB2) currentLevel = "B2";
+        else if (completedB1) currentLevel = "B1";
+        else if (completedA2) currentLevel = "A2";
+        else currentLevel = "A1";
+        
+        document.getElementById('levelValue').innerText = currentLevel;
+        
+        document.getElementById('milestoneA2').innerHTML = completedA2 ? '? Tháng 3-4: A2 - Giao ti?p' : '? Tháng 3-4: A2 - Giao ti?p';
+        document.getElementById('milestoneB1').innerHTML = completedB1 ? '? Tháng 5: B1 - Ð?c l?p' : '? Tháng 5: B1 - Ð?c l?p';
+        document.getElementById('milestoneB2').innerHTML = completedB2 ? '? Tháng 6: B2 - Thành th?o' : '? Tháng 6: B2 - Thành th?o';
+    }
+
+    async function callDeepSeekAPI(userMessage, lessonContext) {
+        if (!DEEPSEEK_API_KEY || DEEPSEEK_API_KEY === 'YOUR_DEEPSEEK_API_KEY') {
+            return "?? Vui lòng c?u hình DeepSeek API Key trong code. Ðang ký mi?n phí t?i platform.deepseek.com";
+        }
+
+        isLoading = true;
+        const sendBtn = document.getElementById('sendBtn');
+        sendBtn.innerHTML = '<span class="loading"></span>';
+        sendBtn.disabled = true;
+
+        try {
+            const response = await fetch(DEEPSEEK_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages: [
+                        {
+                            role: 'system',
+                            content: `B?n là giáo viên ti?ng Pháp chuyên nghi?p. H?c viên dang ? trình d? ${currentLevel}. 
+                            Bài h?c hi?n t?i: ${lessonContext.title} (${lessonContext.level}).
+                            Hãy tr? l?i b?ng ti?ng Pháp kèm gi?i thích ti?ng Vi?t. S?a l?i n?u h?c viên sai. Gi? gi?ng thân thi?n.`
+                        },
+                        {
+                            role: 'user',
+                            content: userMessage
+                        }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 500
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error.message);
+            }
+            
+            const aiResponse = data.choices[0].message.content;
+            
+            const frenchWords = aiResponse.match(/[A-Za-zÀ-ÿçœ]{4,}/g);
+            if (frenchWords) {
+                for (let word of frenchWords.slice(0, 3)) {
+                    if (!vocabulary.some(v => v.word === word)) {
+                        vocabulary.push({
+                            word: word,
+                            meaning: "",
+                            nextReview: Date.now() + 86400000,
+                            ease: 2.5,
+                            addedAt: Date.now()
+                        });
+                    }
+                }
+                renderVocabulary();
+                saveData();
+            }
+            
+            return aiResponse;
+            
+        } catch (error) {
+            console.error('DeepSeek API error:', error);
+            return `? L?i k?t n?i DeepSeek: ${error.message}. Vui lòng ki?m tra API key.`;
+        } finally {
+            isLoading = false;
+            sendBtn.innerHTML = 'Envoyer';
+            sendBtn.disabled = false;
+        }
+    }
+
+    function appendMessage(text, isUser = false) {
+        const chatDiv = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'teacher-message'}`;
+        
+        let content = text;
+        if (!isUser && !text.includes('??') && !text.includes('?')) {
+            content = text + ` <button class="speaker-icon" onclick="speakText('${text.replace(/'/g, "\\'").substring(0, 100)}')">??</button>`;
+        }
+        
+        messageDiv.innerHTML = `<div class="message-content">${content}</div>`;
+        chatDiv.appendChild(messageDiv);
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('userInput');
+        const message = input.value.trim();
+        if (!message || isLoading) return;
+        
+        appendMessage(message, true);
+        input.value = '';
+        
+        const currentLesson = lessons.find(l => l.id === activeLesson);
+        const response = await callDeepSeekAPI(message, currentLesson);
+        appendMessage(response, false);
+        
+        markDailyPractice();
+    }
+
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fr-FR';
+            utterance.rate = 0.9;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function markDailyPractice() {
+        const today = new Date().toDateString();
+        if (lastPracticeDate !== today) {
+            if (lastPracticeDate && new Date() - new Date(lastPracticeDate) < 48 * 3600000) {
+                streak++;
+            } else if (!lastPracticeDate) {
+                streak = 1;
+            } else {
+                streak = 1;
+            }
+            lastPracticeDate = today;
+            updateStreakUI();
+            saveData();
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = `?? Streak: ${streak} ngày! Ti?p t?c gi? l?a!`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    }
+
+    function updateStreakUI() {
+        document.getElementById('streakValue').innerText = streak;
+    }
+
+    function renderLessons() {
+        const container = document.getElementById('lessonList');
+        container.innerHTML = '';
+        
+        lessons.forEach(lesson => {
+            const div = document.createElement('div');
+            div.className = `lesson-item ${lesson.completed ? 'completed' : ''} ${activeLesson === lesson.id ? 'active' : ''}`;
+            div.innerHTML = `
+                <span>${lesson.completed ? '?' : '??'} ${lesson.title}</span>
+                ${!lesson.completed ? `<button class="complete-btn" data-id="${lesson.id}">Hoàn thành</button>` : ''}
+            `;
+            
+            div.onclick = (e) => {
+                if (e.target.classList.contains('complete-btn')) return;
+                activeLesson = lesson.id;
+                renderLessons();
+                appendMessage(`?? Chuy?n sang bài h?c: ${lesson.title}. Hãy b?t d?u nào!`, false);
+                saveData();
+            };
+            
+            const completeBtn = div.querySelector('.complete-btn');
+            if (completeBtn) {
+                completeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    completeLesson(lesson.id);
+                };
+            }
+            
+            container.appendChild(div);
+        });
+    }
+
+    async function completeLesson(lessonId) {
+        const lesson = lessons.find(l => l.id === lessonId);
+        if (!lesson.completed) {
+            lesson.completed = true;
+            updateLevel();
+            renderLessons();
+            saveData();
+            
+            appendMessage(`?? Félicitations! B?n dã hoàn thành bài "${lesson.title}". Làm bài ki?m tra nhanh nhé!`, false);
+            
+            setTimeout(() => {
+                const quizAnswer = prompt(`Quiz: ${lesson.level === 'A1' ? 'Comment dit-on "Hello" en français?' : 
+                                          lesson.level === 'A2' ? 'Conjuguez "manger" au passé composé (je):' : 
+                                          'Donnez un synonyme de "cependant":'}`);
+                if (quizAnswer) {
+                    appendMessage(`Quiz: ${quizAnswer} - Très bien! +10 points d'effort!`, false);
+                }
+            }, 500);
+        }
+    }
+
+    function renderVocabulary() {
+        const container = document.getElementById('vocabList');
+        if (vocabulary.length === 0) {
+            container.innerHTML = '<p>Chua có t? v?ng nào. H?c v?i AI d? t? d?ng luu t? m?i!</p>';
+            return;
+        }
+        
+        container.innerHTML = vocabulary.map(v => `
+            <div class="vocab-item">
+                <span><strong>${v.word}</strong></span>
+                <button onclick="speakText('${v.word}')" style="background: #667eea; padding: 4px 12px; font-size: 12px;">?? Nghe</button>
+            </div>
+        `).join('');
+    }
+
+    function renderReview() {
+        const now = Date.now();
+        const dueWords = vocabulary.filter(v => v.nextReview <= now);
+        const container = document.getElementById('reviewContainer');
+        
+        if (dueWords.length === 0) {
+            container.innerHTML = '<div class="review-card"><p>? Không có t? nào c?n ôn t?p hôm nay! ?</p></div>';
+            return;
+        }
+        
+        let currentIndex = 0;
+        
+        function showWord() {
+            const word = dueWords[currentIndex];
+            container.innerHTML = `
+                <div class="review-card">
+                    <p>T? v?ng c?n ôn: ${currentIndex + 1}/${dueWords.length}</p>
+                    <div class="review-word">${word.word}</div>
+                    <div class="review-buttons">
+                        <button id="hardBtn" style="background: #ef4444;">?? Khó</button>
+                        <button id="goodBtn" style="background: #10b981;">?? OK</button>
+                        <button id="easyBtn" style="background: #3b82f6;">?? D?</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('hardBtn').onclick = () => updateReview(word, 1);
+            document.getElementById('goodBtn').onclick = () => updateReview(word, 3);
+            document.getElementById('easyBtn').onclick = () => updateReview(word, 7);
+        }
+        
+        function updateReview(word, days) {
+            word.nextReview = Date.now() + days * 86400000;
+            saveData();
+            currentIndex++;
+            if (currentIndex < dueWords.length) {
+                showWord();
+            } else {
+                container.innerHTML = '<div class="review-card"><p>?? Hoàn thành ôn t?p hôm nay! ??</p></div>';
+                renderVocabulary();
+            }
+        }
+        
+        showWord();
+    }
+
+    function exportToPDF() {
+        const completedLessons = lessons.filter(l => l.completed).map(l => l.title).join('\n');
+        const vocabList = vocabulary.map(v => v.word).join(', ');
+        
+        const exportHtml = `
+            <div style="font-family: Arial, sans-serif; padding: 20px;">
+                <h1>Báo cáo h?c ti?ng Pháp</h1>
+                <p><strong>C?p d?:</strong> ${currentLevel}</p>
+                <p><strong>Streak:</strong> ${streak} ngày</p>
+                <p><strong>Ngày xu?t:</strong> ${new Date().toLocaleDateString('vi-VN')}</p>
+                
+                <h2>?? Bài h?c dã hoàn thành</h2>
+                <pre>${completedLessons || 'Chua có bài h?c nào'}</pre>
+                
+                <h2>?? T? v?ng dã h?c</h2>
+                <p>${vocabList || 'Chua có t? v?ng'}</p>
+            </div>
+        `;
+        
+        const win = window.open();
+        win.document.write(exportHtml);
+        win.document.close();
+        win.print();
+    }
+
+    function init() {
+        loadData();
+        
+        document.getElementById('sendBtn').onclick = sendMessage;
+        document.getElementById('userInput').onkeypress = (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        };
+        document.getElementById('exportBtn').onclick = exportToPDF;
+        
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab + 'Tab').classList.add('active');
+                
+                if (btn.dataset.tab === 'review') renderReview();
+                if (btn.dataset.tab === 'export') {
+                    const completed = lessons.filter(l => l.completed).map(l => l.title).join('\n');
+                    document.getElementById('exportPreview').innerHTML = `
+                        <strong>Bài h?c dã hoàn thành:</strong><br>${completed || 'Chua có'}<br><br>
+                        <strong>S? t? v?ng:</strong> ${vocabulary.length} t?
+                    `;
+                }
+            };
+        });
+        
+        window.speakText = speakText;
+        window.completeLesson = completeLesson;
+    }
+    
+    init();
+</script>
+</body>
+</html>
