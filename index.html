@@ -3,95 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marie — Gemini French Tutor AI</title>
+<title>Marie AI — Chinh phục Tiếng Pháp B2</title>
 <style>
-  /* Cấu hình màu sắc & Font giống file gốc nhưng hiện đại hơn */
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;1,300&family=DM+Sans:wght@400;500&display=swap');
   :root {
-    --bg: #f7f4ef; --surface: #ffffff; --accent: #1a73e8; 
+    --bg: #f7f4ef; --surface: #ffffff; --accent: #2d5a3d; 
     --text: #1a1814; --border: rgba(0,0,0,0.1); --radius: 12px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
   
-  /* Layout chính */
-  #topbar { height: 60px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; justify-content: space-between; }
-  .logo { font-family: 'Fraunces', serif; font-size: 22px; color: var(--accent); font-style: italic; }
+  #topbar { height: 60px; background: #fff; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; justify-content: space-between; flex-shrink: 0; }
+  .logo { font-family: 'Fraunces', serif; font-size: 22px; color: var(--accent); font-style: italic; font-weight: bold; }
   
   #layout { display: flex; flex: 1; overflow: hidden; }
   
-  /* Sidebar Lộ trình */
-  #sidebar { width: 280px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-  .sidebar-hdr { padding: 15px; font-weight: 500; background: #fdfcf9; border-bottom: 1px solid var(--border); }
+  /* Sidebar */
+  #sidebar { width: 300px; background: #fff; border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+  .sidebar-hdr { padding: 15px; font-weight: bold; background: #fdfcf9; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
   #lesson-list { flex: 1; overflow-y: auto; padding: 10px; }
-  .lesson-item { padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; font-size: 13px; transition: 0.2s; border: 1px solid transparent; }
+  .lesson-item { padding: 12px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; font-size: 13px; transition: 0.2s; border: 1px solid transparent; position: relative; }
   .lesson-item:hover { background: #f0f4f8; }
-  .lesson-item.active { background: #e8f0fe; border-color: var(--accent); font-weight: 500; }
-  .lesson-item.done::after { content: ' ✓'; color: #2d5a3d; font-weight: bold; }
+  .lesson-item.active { background: #eef4f0; border-color: var(--accent); font-weight: 500; }
+  .lesson-item.done::after { content: '✓'; position: absolute; right: 10px; color: var(--accent); font-weight: bold; }
 
-  /* Chat & Tabs */
+  /* Main */
   #main { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
   #tabs { display: flex; background: #fff; border-bottom: 1px solid var(--border); }
-  .tab { padding: 15px 25px; cursor: pointer; font-size: 14px; color: #666; border-bottom: 2px solid transparent; }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+  .tab { padding: 15px 20px; cursor: pointer; font-size: 14px; color: #666; border-bottom: 2px solid transparent; flex: 1; text-align: center; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: bold; }
 
   #chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
   #messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-  .bubble { max-width: 80%; padding: 12px 16px; border-radius: 15px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+  .bubble { max-width: 85%; padding: 12px 16px; border-radius: 15px; font-size: 15px; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
   .msg.bot .bubble { background: #fff; border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 2px; }
   .msg.user .bubble { background: var(--accent); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
 
-  /* Input */
   #input-row { padding: 15px 20px; background: #fff; border-top: 1px solid var(--border); display: flex; gap: 10px; }
-  textarea { flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 10px 15px; resize: none; outline: none; height: 42px; }
-  #send-btn { background: var(--accent); color: white; border: none; padding: 0 20px; border-radius: 20px; cursor: pointer; font-weight: 500; }
+  textarea { flex: 1; border: 1px solid var(--border); border-radius: 20px; padding: 10px 15px; resize: none; outline: none; height: 44px; font-size: 14px; }
+  #send-btn { background: var(--accent); color: white; border: none; padding: 0 25px; border-radius: 20px; cursor: pointer; font-weight: bold; }
 
-  /* Notebook & Review */
-  .panel { display: none; flex: 1; flex-direction: column; padding: 20px; overflow-y: auto; }
-  .panel.active { display: flex; }
-  .v-card { background: #fff; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  /* Vocab */
+  .panel { display: none; flex: 1; padding: 20px; overflow-y: auto; }
+  .panel.active { display: flex; flex-direction: column; }
+  .v-card { background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
+  .speak-btn { background: #f0f4f8; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; }
 </style>
 </head>
 <body>
 
 <div id="topbar">
-  <div class="logo">Marie AI 🇫🇷</div>
-  <div id="stats" style="font-size: 13px; color: #666;">🔥 Streak: <span id="streak-num">0</span> | <span id="progress-txt">0/24 Lessons</span></div>
-  <button onclick="exportData()" style="padding: 5px 12px; border-radius: 5px; border: 1px solid #ddd; cursor: pointer;">Export PDF</button>
+  <div class="logo">Marie AI</div>
+  <div style="font-size: 13px;">🔥 Streak: <span id="streak">0</span> ngày | Lớp: <span id="progress">0</span>/24</div>
+  <button onclick="exportData()" style="padding: 5px 10px; font-size: 12px; cursor: pointer;">Xuất PDF</button>
 </div>
 
 <div id="layout">
   <div id="sidebar">
-    <div class="sidebar-hdr">Lộ trình học B2 (6 tháng)</div>
+    <div class="sidebar-hdr">Lộ trình 6 tháng (A1-B2)</div>
     <div id="lesson-list"></div>
   </div>
 
   <div id="main">
     <div id="tabs">
-      <div class="tab active" onclick="switchTab('chat')">Bài học</div>
-      <div class="tab" onclick="switchTab('vocab')">Sổ tay từ vựng</div>
-      <div class="tab" onclick="switchTab('review')">Ôn tập (SRS)</div>
+      <div class="tab active" data-tab="chat-area">Học tập</div>
+      <div class="tab" data-tab="vocab">Từ vựng</div>
+      <div class="tab" data-tab="review">Ôn tập</div>
     </div>
 
     <div id="chat-area" class="panel active">
       <div id="messages">
-        <div class="msg bot"><div class="bubble">Bonjour! Tôi là Marie. Tôi đã sẵn sàng đồng hành cùng bạn chinh phục B2 trong 6 tháng tới. Hãy chọn bài đầu tiên để bắt đầu!</div></div>
+        <div class="msg bot"><div class="bubble">Bonjour! Marie đã sẵn sàng với model Gemini 2.0 Flash cực nhanh. Hãy chọn bài học để chúng ta bắt đầu hành trình B2 nhé! 🇫🇷</div></div>
       </div>
       <div id="input-row">
-        <textarea id="user-input" placeholder="Gửi tin nhắn cho Marie..."></textarea>
+        <textarea id="user-input" placeholder="Nhập tin nhắn... (hoặc gõ 'Xong bài')"></textarea>
         <button id="send-btn">Gửi</button>
       </div>
     </div>
 
     <div id="vocab" class="panel">
-      <h3>Sổ tay từ vựng của bạn</h3>
-      <div id="vocab-list" style="margin-top:15px"></div>
+      <div id="vocab-list"></div>
     </div>
 
-    <div id="review" class="panel" style="align-items: center; justify-content: center;">
-      <div id="review-card" style="width: 100%; max-width: 400px; text-align: center;">
-        <p style="color:#888; margin-bottom:20px">Đã đến lúc ôn tập từ vựng!</p>
-        <div id="review-content"></div>
+    <div id="review" class="panel" style="text-align:center; justify-content:center;">
+      <div id="review-box">
+        <p>Hệ thống Ghi nhớ ngắt quãng (SRS) đang chờ từ vựng mới...</p>
       </div>
     </div>
   </div>
@@ -99,107 +95,87 @@
 
 <script>
 const KEY = "AIzaSyCIxoRei5XMnV8T5qrmrhYqxvPYVTlstIY";
-const ENDPOINT = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${KEY}`;
+// CHÚ Ý: Model chính xác cho Gemini API 2.0
+const MODEL = "models/gemini-2.0-flash"; 
 
-const LESSONS = [
-  {id:1, lvl:'A1', t:'Chào hỏi & Giới thiệu'}, {id:2, lvl:'A1', t:'Số đếm & Thời gian'},
-  {id:3, lvl:'A1', t:'Gia đình & Mô tả người'}, {id:4, lvl:'A2', t:'Thì hiện tại & Động từ'},
-  {id:5, lvl:'A2', t:'Mua sắm & Ăn uống'}, {id:6, lvl:'B1', t:'Thì quá khứ Passé Composé'},
-  {id:7, lvl:'B1', t:'Thì tương lai Futur'}, {id:8, lvl:'B2', t:'Thức giả định Subjonctif'}
-];
-
-// ── STATE ──
-let state = JSON.parse(localStorage.getItem('marie_pro_v1')) || {
-  done: [], vocab: [], streak: 0, lastDate: null, history: []
+let state = JSON.parse(localStorage.getItem('marie_v2')) || {
+  done: [], vocab: [], streak: 0, lastDate: null
 };
 
-function save() { 
-  localStorage.setItem('marie_pro_v1', JSON.stringify(state)); 
-  renderSidebar(); 
-  document.getElementById('streak-num').innerText = state.streak;
-  document.getElementById('progress-txt').innerText = `${state.done.length}/24 Lessons`;
+const CURRICULUM = [
+  {id:1, lvl:'A1', t:'Chào hỏi & Giới thiệu'}, {id:2, lvl:'A1', t:'Số đếm & Thời gian'},
+  {id:3, lvl:'A2', t:'Thì hiện tại (Présent)'}, {id:4, lvl:'A2', t:'Đi du lịch & Hỏi đường'},
+  {id:5, lvl:'B1', t:'Quá khứ (Passé Composé)'}, {id:6, lvl:'B1', t:'Diễn tả cảm xúc'},
+  {id:7, lvl:'B2', t:'Thức giả định (Subjonctif)'}, {id:8, lvl:'B2', t:'Tranh luận chính trị'}
+];
+
+function save() {
+  localStorage.setItem('marie_v2', JSON.stringify(state));
+  document.getElementById('streak').innerText = state.streak;
+  document.getElementById('progress').innerText = state.done.length;
 }
 
-// ── RENDER ──
-function renderSidebar() {
-  const list = document.getElementById('lesson-list');
-  list.innerHTML = '';
-  LESSONS.forEach(l => {
-    const div = document.createElement('div');
-    div.className = `lesson-item ${state.done.includes(l.id) ? 'done' : ''}`;
-    div.innerHTML = `<b>${l.lvl}</b> · ${l.t}`;
-    div.onclick = () => startLesson(l);
-    list.appendChild(div);
-  });
-}
+// Render bài học
+const lessonList = document.getElementById('lesson-list');
+CURRICULUM.forEach(l => {
+  const div = document.createElement('div');
+  div.className = `lesson-item ${state.done.includes(l.id) ? 'done' : ''}`;
+  div.innerHTML = `<b>${l.lvl}</b>: ${l.t}`;
+  div.onclick = () => startLesson(l, div);
+  lessonList.appendChild(div);
+});
 
-function switchTab(name) {
-  document.querySelectorAll('.panel, .tab').forEach(el => el.classList.remove('active'));
-  if(name === 'chat') document.getElementById('chat-area').classList.add('active');
-  if(name === 'vocab') { document.getElementById('vocab').classList.add('active'); renderVocab(); }
-  if(name === 'review') { document.getElementById('review').classList.add('active'); startReview(); }
-  event.currentTarget?.classList?.add('active');
-}
-
-// ── LOGIC CHAT ──
-let currentL = null;
-
-async function startLesson(lesson) {
-  currentL = lesson;
-  state.history = [];
+async function startLesson(lesson, el) {
+  document.querySelectorAll('.lesson-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
   document.getElementById('messages').innerHTML = '';
-  addMsg('bot', `Bắt đầu bài học: **${lesson.t}**. Marie đang soạn bài...`);
   
-  const prompt = `Bạn là Marie, giáo viên tiếng Pháp. Hãy dạy bài "${lesson.t}" cấp độ ${lesson.lvl}. 
-  Hướng dẫn: Chào hỏi, dạy 2-3 mẫu câu quan trọng nhất kèm bản dịch tiếng Việt trong ngoặc (). 
-  Kết thúc bằng: "VOCAB: từ=nghĩa" và một câu hỏi luyện tập.`;
+  const prompt = `Bạn là Marie, giáo viên tiếng Pháp. Dạy tôi bài "${lesson.t}" (${lesson.lvl}). 
+  Yêu cầu: Giải thích ngắn gọn, dịch Việt trong ngoặc (). 
+  Kết thúc bằng format "VOCAB: từ=nghĩa | từ2=nghĩa2" và 1 câu hỏi thực hành.`;
   
   callGemini(prompt);
 }
 
 async function callGemini(text) {
-  const typing = addMsg('bot', 'Marie đang viết...');
-  
+  const mid = addMsg('bot', 'Marie đang soạn tin...');
   try {
-    const response = await fetch(ENDPOINT, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/${MODEL}:generateContent?key=${KEY}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         contents: [{ role: "user", parts: [{ text: text }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
+        generationConfig: { temperature: 0.7, maxOutputTokens: 1000 }
       })
     });
 
-    const data = await response.json();
-    if(data.error) throw new Error(data.error.message);
-    
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
     const reply = data.candidates.content.parts.text;
-    document.getElementById(typing).remove();
+    document.getElementById(mid).remove();
     addMsg('bot', reply);
     
-    // Lưu từ vựng tự động
-    const match = reply.match(/VOCAB:\s*(.*)/i);
-    if(match) {
-      match.split('|').forEach(pair => {
-        const [fr, vi] = pair.split('=');
-        if(fr && vi && !state.vocab.find(v => v.f === fr.trim())) {
-          state.vocab.push({ f: fr.trim(), v: vi.trim(), nextReview: Date.now() });
-        }
+    // Auto-save Vocab
+    if (reply.includes('VOCAB:')) {
+      const parts = reply.split('VOCAB:').split('|');
+      parts.forEach(p => {
+        const [f, v] = p.split('=');
+        if (f && v) state.vocab.push({f: f.trim(), v: v.trim(), date: Date.now()});
       });
       save();
     }
   } catch (e) {
-    document.getElementById(typing).innerText = "Lỗi: " + e.message;
+    document.getElementById(mid).innerText = "Lỗi: " + e.message;
   }
 }
 
 function addMsg(role, text) {
   const id = 'm' + Date.now();
-  const box = document.getElementById('messages');
   const div = document.createElement('div');
-  div.className = `msg ${role}`;
-  div.id = id;
+  div.className = `msg ${role}`; div.id = id;
   div.innerHTML = `<div class="bubble">${text.replace(/\n/g, '<br>')}</div>`;
+  const box = document.getElementById('messages');
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
   return id;
@@ -207,83 +183,70 @@ function addMsg(role, text) {
 
 document.getElementById('send-btn').onclick = () => {
   const inp = document.getElementById('user-input');
-  if(!inp.value) return;
-  const msg = inp.value;
-  addMsg('user', msg);
-  inp.value = '';
+  const val = inp.value.trim();
+  if (!val) return;
+  addMsg('user', val);
   
-  if(msg.toLowerCase().includes('xong') && currentL) {
-    if(!state.done.includes(currentL.id)) state.done.push(currentL.id);
-    updateStreak();
-    save();
+  if (val.toLowerCase().includes('xong bài')) {
+    const active = document.querySelector('.lesson-item.active');
+    if (active) {
+      const id = CURRICULUM.find(c => active.innerText.includes(c.t)).id;
+      if (!state.done.includes(id)) {
+        state.done.push(id);
+        active.classList.add('done');
+        updateStreak();
+      }
+    }
   }
-  callGemini(msg);
+  callGemini(val);
+  inp.value = '';
 };
 
 function updateStreak() {
   const today = new Date().toDateString();
-  if(state.lastDate !== today) {
+  if (state.lastDate !== today) {
     state.streak++;
     state.lastDate = today;
+    save();
   }
 }
 
-// ── VOCAB & TTS ──
+function speak(t) {
+  const s = new SpeechSynthesisUtterance(t);
+  s.lang = 'fr-FR';
+  window.speechSynthesis.speak(s);
+}
+
+// Tab Switching
+document.querySelectorAll('.tab').forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll('.tab, .panel').forEach(el => el.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+    if (t.dataset.tab === 'vocab') renderVocab();
+  };
+});
+
 function renderVocab() {
   const list = document.getElementById('vocab-list');
   list.innerHTML = state.vocab.map(v => `
     <div class="v-card">
       <span><b>${v.f}</b>: ${v.v}</span>
-      <button onclick="speak('${v.f}')">🔊 Nghe</button>
+      <button class="speak-btn" onclick="speak('${v.f}')">🔊 Nghe</button>
     </div>
   `).join('');
 }
 
-function speak(text) {
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'fr-FR';
-  speechSynthesis.speak(u);
-}
-
-// ── REVIEW (SRS) ──
-function startReview() {
-  const container = document.getElementById('review-content');
-  const due = state.vocab.filter(v => v.nextReview <= Date.now());
-  
-  if(due.length === 0) {
-    container.innerHTML = "Bạn đã hoàn thành hết từ vựng hôm nay! 🎉";
-    return;
-  }
-  
-  const word = due;
-  container.innerHTML = `
-    <h2 style="font-size:32px; margin:20px 0">${word.f}</h2>
-    <button onclick="this.innerText='${word.v}'" style="padding:10px; margin-bottom:15px">Hiện nghĩa</button>
-    <div style="display:flex; gap:10px; justify-content:center">
-      <button onclick="rateWord('${word.f}', 1)" style="background:#ea4335; color:white; border:none; padding:10px; border-radius:5px">Khó</button>
-      <button onclick="rateWord('${word.f}', 7)" style="background:#34a853; color:white; border:none; padding:10px; border-radius:5px">Dễ</button>
-    </div>
-  `;
-}
-
-function rateWord(french, days) {
-  const idx = state.vocab.findIndex(v => v.f === french);
-  state.vocab[idx].nextReview = Date.now() + (days * 24 * 60 * 60 * 1000);
-  save();
-  startReview();
-}
-
 function exportData() {
-  let txt = `BÁO CÁO HỌC TẬP MARIE\nStreak: ${state.streak}\nHoàn thành: ${state.done.length}/24 bài\n\nTừ vựng:\n`;
-  state.vocab.forEach(v => txt += `- ${v.f}: ${v.v}\n`);
-  const blob = new Blob([txt], {type: 'text/plain'});
+  let content = "BAO CAO MARIE AI\nStreak: " + state.streak + "\nTu vung:\n";
+  state.vocab.forEach(v => content += `- ${v.f}: ${v.v}\n`);
+  const blob = new Blob([content], {type: 'text/plain'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'marie_report.txt';
+  a.download = 'marie-report.txt';
   a.click();
 }
 
-renderSidebar();
 save();
 </script>
 </body>
